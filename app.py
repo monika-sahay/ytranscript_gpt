@@ -137,7 +137,15 @@ def get_transcript():
             "duration_seconds": round(duration, 2),
             "user_agent": user_agent
         }), 500
-    
+
+@app.route('/privacy', methods=['GET'])
+def privacy_policy():
+    return """
+    <h1>Privacy Policy</h1>
+    <p>This app does not collect or store any personal data.</p>
+    <p>Transcripts are generated on-the-fly and are not saved.</p>
+    <p>If you have any concerns, contact: your-email@example.com</p>
+    """, 200
 
 if __name__ == '__main__':
     app.run()
