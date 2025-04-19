@@ -12,7 +12,7 @@ def client():
 @pytest.mark.parametrize("url, expected_keyword", [
     ("https://www.youtube.com/watch?v=UaVxeJQzGxY", "heisenberg"),
     ("https://www.youtube.com/watch?v=Bc5PpUyrwW0", "quantum"),
-    ("https://www.youtube.com/watch?v=RrKRN9zRBWs", "aws"),
+    ("https://www.youtube.com/watch?v=UaVxeJQzGxY&list=PLwdnzlV3ogoVGGv52O5biztwOcUewLEf5&index=10", "harmonic oscillator"),
 ])
 def test_transcript_contains_keyword(client, url, expected_keyword):
     response = client.post("/transcript", json={"url": url})
