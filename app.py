@@ -38,14 +38,15 @@ def get_transcript_with_fallback(video_id, lang='en'):
 def download_subtitles_with_yt_dlp(video_url, output_file_base="fallback_transcript"):
     try:
         ydl_opts = {
-            'skip_download': True,
-            'writesubtitles': True,
-            'writeautomaticsub': True,
-            'subtitleslangs': ['en'],
-            'subtitlesformat': 'vtt',
-            'outtmpl': f"{output_file_base}.%(ext)s",
-            'noplaylist': True
-        }
+    'cookiefile': 'cookies.txt',
+    'skip_download': True,
+    'writesubtitles': True,
+    'writeautomaticsub': True,
+    'subtitleslangs': ['en'],
+    'subtitlesformat': 'vtt',
+    'outtmpl': f"{output_file_base}.%(ext)s",
+    'noplaylist': True
+}
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])
         return f"{output_file_base}.en.vtt"
