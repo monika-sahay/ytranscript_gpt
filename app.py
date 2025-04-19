@@ -8,6 +8,8 @@ import yt_dlp
 import re
 import os
 import logging
+import time
+import traceback
 
 def extract_video_id(url):
     parsed_url = urlparse(url)
@@ -104,24 +106,36 @@ logger = logging.getLogger(__name__)
 
 @app.route('/transcript', methods=['POST'])
 def get_transcript():
+    start_time = time.time()
+
     data = request.json
     url = data.get("url")
-    print(f">>> Received /transcript request with URL: {url}")
-    logger.info(f"Received /transcript request with URL: {url}")
+    user_agent = request.headers.get("User-Agent", "Unknown")
+
+    logger.info(f"📩 Received /transcript request")
+    logger.info(f"🔗 URL: {url}")
+    logger.info(f"🧠 User-Agent: {user_agent}")
 
     if not url:
-        logger.warning("No URL provided.")
-        return jsonify({"error": "Missing URL"}), 400
+        logger.warning("🚫 No URL provided.")
+        return jsonify({"error": "Missing URL", "hint": "Make sure you include a 'url' key in your POST JSON."}), 400
 
     try:
-        transcript = get_youtube_transcript(url)
-        print(">>> Transcript extracted successfully.")
-        print(">>> Transcript preview:\n", transcript[:500])  # show first 500 chars
+        transcript = get_youtube_transcript(url)  # your existing function
+        duration = time.time() - start_time
+        logger.info(f"✅ Transcript successfully returned in {duration:.2f}s")
         return jsonify({"transcript": transcript})
+
     except Exception as e:
-        print(">>> Error occurred while retrieving transcript:", e)
+        duration = time.time() - start_time
+        logger.error("❌ Error occurred while retrieving transcript:")
+        traceback.print_exc()
         return jsonify({
-            "error": "Transcript could not be retrieved. Possible reasons: subtitles are disabled, video is private, or CAPTCHA was triggered. Try a different video."
+            "error": "Transcript could not be retrieved.",
+            "details": str(e),
+            "hint": "Check if the video has subtitles or if YouTube blocked the request (e.g. CAPTCHA).",
+            "duration_seconds": round(duration, 2),
+            "user_agent": user_agent
         }), 500
     
 
