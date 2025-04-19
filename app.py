@@ -122,7 +122,9 @@ def get_transcript():
         return jsonify({"transcript": transcript})
     except Exception as e:
         logger.exception("Failed to return transcript")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "error": "Transcript could not be retrieved. Possible reasons: subtitles are disabled, video is private, or CAPTCHA was triggered. Try a different video."
+        }), 500
 
 if __name__ == '__main__':
     app.run()
